@@ -76,6 +76,14 @@ export default class ScreenList extends React.PureComponent {
             >
               <Text style={{ flex: 1, fontSize: 50, color: '#fff', textAlign: 'center', marginTop: -10 }}>&gt;</Text>
             </TouchableHighlight>
+            <TouchableHighlight
+              style={styles.page}
+              onPress={() =>
+                this.props.screenProps.onLoadDays(7).then((chartData) => navigate('ScreenChart', chartData))
+              }
+            >
+              <Text style={{ flex: 1, fontSize: 50, color: '#fff', textAlign: 'center', marginTop: -10 }}>C</Text>
+            </TouchableHighlight>
           </View>
 
           {this.props.screenProps.selectedRow >= 0 &&

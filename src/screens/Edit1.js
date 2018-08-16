@@ -20,7 +20,7 @@ class SelectInt extends React.PureComponent {
   
               <Picker
                 selectedValue={this.props.selectedValue}
-                onValueChange={this.props.onValueChange}>
+                onValueChange={(value, index) => this.props.onValueChange(parseInt(value))}>
                 {Array.from(Array(this.props.count).keys()).map((v, i) =>
                   <Picker.Item key={i} label={(this.props.step * v).toString()} value={(this.props.step * v).toString()} />)
                 }
@@ -61,14 +61,14 @@ export default class ScreenEdit1 extends React.Component {
             <SelectInt
                 label='sein D (min)'
                 selectedValue={this.state.durationD.toString()}
-                onValueChange={(itemValue, itemIndex) => this.setState({ durationD: parseInt(itemValue) })}
+                onValueChange={itemValue => this.setState({ durationD: itemValue })}
                 count={20}
                 step={5}
             />
             <SelectInt
                 label='sein G (min)'
                 selectedValue={this.state.durationG.toString()}
-                onValueChange={(itemValue, itemIndex) => this.setState({ durationG: parseInt(itemValue) })}
+                onValueChange={itemValue => this.setState({ durationG: itemValue })}
                 count={20}
                 step={5}
             />
@@ -79,14 +79,14 @@ export default class ScreenEdit1 extends React.Component {
             <SelectInt
                 label='bib lait mat. (ml)'
                 selectedValue={this.state.mMilk.toString()}
-                onValueChange={(itemValue, itemIndex) => this.setState({ mMilk: parseInt(itemValue) })}
+                onValueChange={itemValue => this.setState({ mMilk: itemValue })}
                 count={70}
                 step={5}
             />
             <SelectInt
                 label='bib lait art. (ml)'
                 selectedValue={this.state.aMilk.toString()}
-                onValueChange={(itemValue, itemIndex) => this.setState({ aMilk: parseInt(itemValue) })}
+                onValueChange={itemValue => this.setState({ aMilk: itemValue })}
                 count={70}
                 step={5}
             />

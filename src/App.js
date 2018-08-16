@@ -6,6 +6,7 @@ import firebase from 'firebase';
 import ScreenList from './screens/List';
 import ScreenEdit1 from './screens/Edit1';
 import ScreenEdit2 from './screens/Edit2';
+import ScreenChart from './screens/Chart';
 
 const firebaseSecrets = require('../firebaseSecrets.json');
 
@@ -40,6 +41,7 @@ const StackNavigator = createStackNavigator({
   ScreenList: { screen: ScreenList },
   ScreenEdit1: { screen: ScreenEdit1 },
   ScreenEdit2: { screen: ScreenEdit2 },
+  ScreenChart: { screen: ScreenChart },
 });
 
 
@@ -95,7 +97,7 @@ export default class App extends React.Component {
   onLoadDay(step) {
     let currentDay = new Date(this.state.currentDay.getTime() + 24 * 3600 * 1000 * step);
     this.setState({ loading: true, currentDay: currentDay, list:[] });
-    return firebase.database().ref('feeds/' + formatDateFirebase(currentDay)).once('value', (snapshot) => {
+    return firebase.database().ref('feeds/' + formatDateFirebase(currentDay)).once('value').then((snapshot) => {
       let list = [];
       snapshot.forEach((cs) => {
         let obj = cs.val();
@@ -108,13 +110,39 @@ export default class App extends React.Component {
     });
   }
 
+  onLoadDays(count) {
+    return firebase.database().ref('feeds').orderByKey().limitToLast(count).once('value').then((snapshot) => {
+      let list = [];
+      snapshot.forEach((cs) => {
+        let charItem = {date:cs.key, feeds:[]}
+        if(cs.val() instanceof Array) {
+          cs.val().forEach((v)=> {
+            if(v) {
+              charItem.feeds.push(v);
+            }
+          })
+        } else {
+          let obj = cs.val();
+          Object.keys(obj).forEach((k)=> {
+            let v = obj[k];
+            charItem.feeds.push(v);
+         })
+        }
+        list.push(charItem);
+      });
+     
+      return list;
+    });
+  }
+
   render() {
     return (<StackNavigator screenProps={{
       ...this.state,
       onSave: this.onSave,
       onRemove: this.onRemove,
       onSelectRow: this.onSelectRow,
-      onLoadDay: this.onLoadDay
+      onLoadDay: this.onLoadDay,
+      onLoadDays: this.onLoadDays
     }} />)
   }
 }
