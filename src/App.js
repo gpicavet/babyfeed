@@ -7,6 +7,7 @@ import ScreenList from './screens/List';
 import ScreenEdit1 from './screens/Edit1';
 import ScreenEdit2 from './screens/Edit2';
 import ScreenChart from './screens/Chart';
+import ScreenFirebaseConfig from './screens/FirebaseConfig';
 
 const firebaseSecrets = require('../firebaseSecrets.json');
 
@@ -39,6 +40,7 @@ function formatDateFirebase(date) {
 
 const StackNavigator = createStackNavigator({
   ScreenList: { screen: ScreenList },
+  ScreenFirebaseConfig: { screen: ScreenFirebaseConfig },
   ScreenEdit1: { screen: ScreenEdit1 },
   ScreenEdit2: { screen: ScreenEdit2 },
   ScreenChart: { screen: ScreenChart },
@@ -52,22 +54,17 @@ export default class App extends React.Component {
     currentDay.setSeconds(0);
     currentDay.setMilliseconds(0);
     this.state = { loading: true, currentDay: currentDay, selectedRow: -1, list: [] }
-    this.onSave = this.onSave.bind(this);
-    this.onRemove = this.onRemove.bind(this);
-    this.onLoadDay = this.onLoadDay.bind(this);
-    this.onSelectRow = this.onSelectRow.bind(this);
   }
 
   componentDidMount() {
     this.onLoadDay(0);
   }
 
-  onRemove(key) {
-    console.log("remove " + key);
-    let pr = firebase.database().ref('feeds/' + formatDateFirebase(this.state.currentDay)).child(key).remove();
-    return pr.then(() => this.onLoadDay(0));
+  onSaveFirebaseConfig = (conf) => {
+
   }
-  onSave(obj) {
+  
+  onSave = (obj) => {
     let pr;
     let firebaseRef = firebase.database().ref('feeds/' + formatDateFirebase(this.state.currentDay));
     let objCopy = { ...obj };
@@ -83,7 +80,13 @@ export default class App extends React.Component {
     return pr.then(() => this.onLoadDay(0));
   }
 
-  onSelectRow(i) {
+  onRemove = (key) => {
+    console.log("remove " + key);
+    let pr = firebase.database().ref('feeds/' + formatDateFirebase(this.state.currentDay)).child(key).remove();
+    return pr.then(() => this.onLoadDay(0));
+  }
+
+  onSelectRow = (i) => {
     if (i >= 0 && i < this.state.list.length) {
       if (this.state.selectedRow === i)
         this.setState({ selectedRow: -1 });
@@ -94,7 +97,7 @@ export default class App extends React.Component {
     }
   }
 
-  onLoadDay(step) {
+  onLoadDay = (step) => {
     let currentDay = new Date(this.state.currentDay.getTime() + 24 * 3600 * 1000 * step);
     this.setState({ loading: true, currentDay: currentDay, list:[] });
     return firebase.database().ref('feeds/' + formatDateFirebase(currentDay)).once('value').then((snapshot) => {
@@ -110,7 +113,7 @@ export default class App extends React.Component {
     });
   }
 
-  onLoadDays(count) {
+  onLoadDays = (count) => {
     return firebase.database().ref('feeds').orderByKey().limitToLast(count).once('value').then((snapshot) => {
       let list = [];
       snapshot.forEach((cs) => {
@@ -138,6 +141,7 @@ export default class App extends React.Component {
   render() {
     return (<StackNavigator screenProps={{
       ...this.state,
+      onSaveConfig: this.onSaveConfig,
       onSave: this.onSave,
       onRemove: this.onRemove,
       onSelectRow: this.onSelectRow,

@@ -19,6 +19,7 @@ class SelectInt extends React.PureComponent {
               </Text>
   
               <Picker
+                style={{ flex: 1}}
                 selectedValue={this.props.selectedValue}
                 onValueChange={(value, index) => this.props.onValueChange(parseInt(value))}>
                 {Array.from(Array(this.props.count).keys()).map((v, i) =>
@@ -51,9 +52,11 @@ export default class ScreenEdit1 extends React.Component {
           </Text>
           <DatePicker
             style={{ flex: 1, width: SCREEN_WIDTH * 0.8, padding: 5 }}
+            mode='time'
+            format='HH:mm'
+            cancelBtnText='Annuler' //force french because of ios chinese default
+            confirmBtnText='OK'
             date={this.state.date}
-            mode="time"
-            format="HH:mm"
             onDateChange={(date) => { this.setState({ date: parseTime(date) }) }}
           />
   

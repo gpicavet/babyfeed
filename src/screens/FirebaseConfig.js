@@ -3,7 +3,7 @@ import { View, ScrollView, TouchableOpacity, TouchableHighlight, StyleSheet, Dim
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
-export default class ScreenEdit2 extends React.Component {
+export default class ScreenFirebaseConfig extends React.Component {
   static navigationOptions = {
     title: 'Edit 2/2',
   };
@@ -17,17 +17,17 @@ export default class ScreenEdit2 extends React.Component {
       <View style={styles.container}>
 
         <TextInput
-          placeholder="commentaire"
+          placeholder="put json config here"
           style={{ textAlignVertical: "top", height:'50%' }}
           multiline={true}
-          onChangeText={(text) => this.setState({ comment: text })}
-          value={this.state.comment}
+          onChangeText={(text) => this.setState({ config: text })}
+          value={this.state.config}
         />
 
         <Button
           title="OK"
           onPress={() => {
-            return this.props.screenProps.onSave(this.state)
+            return this.props.screenProps.onSaveFirebaseConfig(this.state)
               .then(
                 () => navigate('ScreenList'));
           }
